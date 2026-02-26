@@ -1,7 +1,7 @@
 const Batch = require('../models/Batch');
 const QRCode = require('qrcode');
 
-// @desc    Create new food batch (Farmer only)
+
 exports.createBatch = async (req, res) => {
     try {
         const newBatch = new Batch({
