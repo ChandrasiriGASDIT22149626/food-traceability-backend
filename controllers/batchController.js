@@ -49,7 +49,6 @@ exports.getBatchByNumber = async (req, res) => {
     }
 };
 
-// @desc    Get full list of batches
 exports.getAllBatches = async (req, res) => {
     try {
         const batches = await Batch.find().populate('producer', 'name');
