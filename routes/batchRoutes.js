@@ -1,30 +1,23 @@
 const express = require('express');
 const router = express.Router();
+const { 
+    createBatch, 
+    updateBatchStatus, 
+    getBatchByNumber, 
+    getAllBatches 
+} = require('../controllers/batchController');
 const { protect, authorize } = require('../middleware/authMiddleware');
-const Batch = require('../models/Batch');
-const { createBatch, getBatchHistory } = require('../controllers/batchController');
-const { protect, authorize } = require('../middleware/authMiddleware');
-// @desc    Create a new batch
-// @route   POST /api/batches
-// @access  Private (Farmer only)
-router.post('/', protect, authorize('Farmer'), async (req, res) => {
-  try {
-    const newBatch = new Batch({
-      ...req.body,
-      producer: req.user.id // Associate the batch with the logged-in Farmer
-    });
-    const savedBatch = await newBatch.save();
-    res.status(201).json(savedBatch);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
 
+// 1. Only Farmers can create a new batch
+router.post('/', protect, authorize('Farmer'), createBatch);
 
+// 2. Suppliers/Retailers can update status (In Transit, Processed, etc.)
+router.put('/:id', protect, authorize('Supplier', 'Retailer'), updateBatchStatus);
 
+// 3. Consumers/Public can view details by batch number
+router.get('/:batchNumber', getBatchByNumber);
 
-
-router.get('/:batchNumber', getBatchHistory);
-
+// 4. Admin or general view of all batches
+router.get('/', protect, getAllBatches);
 
 module.exports = router;
