@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/authMiddleware');
 const Batch = require('../models/Batch');
-
+const { createBatch, getBatchHistory } = require('../controllers/batchController');
+const { protect, authorize } = require('../middleware/authMiddleware');
 // @desc    Create a new batch
 // @route   POST /api/batches
 // @access  Private (Farmer only)
@@ -18,5 +19,12 @@ router.post('/', protect, authorize('Farmer'), async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+
+
+
+
+router.get('/:batchNumber', getBatchHistory);
+
 
 module.exports = router;
